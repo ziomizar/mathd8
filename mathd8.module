@@ -1,0 +1,22 @@
+<?php
+
+/**
+ * @file
+ * Exposes global functionality for mathd8.
+ */
+
+/**
+ * Implements hook_theme().
+ */
+function mathd8_theme() {
+  return [
+    'mathd8_field' => [
+      'variables' => [
+        'steps' => NULL,
+        'raw' => NULL,
+        'tokens' => NULL,
+        'result' => NULL,
+      ],
+    ],
+  ];
+}

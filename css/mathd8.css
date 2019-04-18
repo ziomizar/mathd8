@@ -1,0 +1,21 @@
+.mathd8-expression span {
+  padding: 3px;
+  margin: 1px;
+}
+
+.token-result {
+  position: relative;
+  display: inline-block;
+}
+
+.token-result::after {
+  content: ")";
+}
+
+.token-result::before {
+  content: "(";
+}
+
+.token-active {
+  font-weight: 900;
+}

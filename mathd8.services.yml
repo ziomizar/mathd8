@@ -1,0 +1,10 @@
+services:
+  mathd8.operator_manager:
+    class: Drupal\mathd8\Plugin\OperatorPluginManager
+    parent: default_plugin_manager
+  mathd8.parser:
+    class: Drupal\mathd8\Mathd8Parser
+    arguments: ['@mathd8.lexer']
+  mathd8.lexer:
+    class: Drupal\mathd8\Lexer
+    arguments: ['@mathd8.operator_manager']

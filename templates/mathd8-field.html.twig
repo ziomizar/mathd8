@@ -1,0 +1,23 @@
+{#
+/**
+ * @file
+ * Default theme implementation to display a mathematical parser.
+ *
+ * Available variables:
+ * - tokens: the list of tokens of the current expression.
+ *   - position: the position of the token in the expression
+ *   - value: the symbol or the value of the token.
+ * - result: the result of the expression.
+ */
+#}
+
+<div class="mathd8-expression not-animated-yet">
+  {% for token in tokens %}
+    <span class="token token-{{ token.position }}">
+      {{ token.value }}
+    </span>
+  {% endfor %}
+  <span> = </span>
+
+  <span>{{ result }}</span>
+</div>

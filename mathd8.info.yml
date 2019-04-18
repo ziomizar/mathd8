@@ -1,0 +1,5 @@
+name: mathd8
+type: module
+description: 'Implement the Postfix_evaluation_algorithm and Shunting-yard_algorithm in drupal way.'
+package: Math
+core: 8

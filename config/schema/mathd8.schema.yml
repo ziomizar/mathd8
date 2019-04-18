@@ -1,0 +1,7 @@
+field.formatter.settings.mathd8_parser:
+  type: mapping
+  label: 'Animation'
+  mapping:
+    animation:
+      type: boolean
+      label: 'Enable'

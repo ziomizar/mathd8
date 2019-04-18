@@ -1,0 +1,9 @@
+mathd8-js:
+  css:
+    theme:
+      css/mathd8.css: {}
+  js:
+    js/mathd8.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupalSettings
