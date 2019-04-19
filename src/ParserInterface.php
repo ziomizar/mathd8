@@ -37,7 +37,7 @@ interface ParserInterface {
    * @param string $expression
    *   The string with the expression.
    *
-   * @return Drupal\mathd8\Controller\Token
+   * @return \Drupal\mathd8\Controller\Token
    *   The token containing the result of the expression.
    */
   public function evaluate($expression);

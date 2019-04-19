@@ -153,9 +153,9 @@ class Mathd8FieldFormatter extends FormatterBase implements ContainerFactoryPlug
     if ($this->parser && $this->parser->validateExpression($output['raw'])) {
       try {
         $output['result'] = $this->parser->evaluate($output['raw'])->value();
-        /* @var \Drupal\mathd8\Controller\Token[] $output['tokens'] */
-        $output['tokens'] = $this->parser->expression();
-        $output['tokens'] = $this->toArray($output['tokens']);
+        /** @var \Drupal\mathd8\Controller\Token[] $tokens */
+        $tokens = $this->parser->expression();
+        $output['tokens'] = $this->toArray($tokens);
         $output['steps'] = $this->parser->steps();
       }
       catch (InvalidTokenException $e) {
@@ -184,7 +184,7 @@ class Mathd8FieldFormatter extends FormatterBase implements ContainerFactoryPlug
   /**
    * Convert the array of tokens into an associative array.
    *
-   * @params Drupal\mathd8\Controller\Token[]
+   * @params Drupal\mathd8\Controller\Token[] $tokens
    *   The array of tokens.
    *
    * @return array

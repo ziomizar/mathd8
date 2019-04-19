@@ -28,17 +28,17 @@ class OperatorPluginManager extends DefaultPluginManager {
     $this->alterInfo('mathd8_operator_manager_info');
     $this->setCacheBackend($cache_backend, 'mathd8_operator_manager_plugins');
   }
-  
+
   /**
    * Load all the operators available.
    */
   public function loadAllOperators() {
     $instances = [];
-    foreach($this->getDefinitions() as $plugin){
+    foreach ($this->getDefinitions() as $plugin) {
       $instances[$plugin['id']] = $this->createInstance($plugin['id']);
     }
-    
+
     return $instances;
   }
-  
+
 }

@@ -44,6 +44,7 @@ trait ShuntingYardTrait {
    */
   public function toPostfix($expression) {
     try {
+      /** @var \Drupal\mathd8\Controller\Token[] $tokens */
       $tokens = $this->lexer->getTokens($expression);
     }
     catch (InvalidTokenException $e) {

@@ -33,6 +33,6 @@ abstract class OperatorPluginBase extends PluginBase implements OperatorPluginIn
   /**
    * {@inheritdoc}
    */
-  abstract function evaluate($op1, $op2);
+  abstract public function evaluate($op1, $op2);
 
 }
