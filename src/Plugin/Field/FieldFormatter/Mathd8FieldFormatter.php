@@ -146,16 +146,23 @@ class Mathd8FieldFormatter extends FormatterBase implements ContainerFactoryPlug
     // should equal the output, including newlines.
     $output = [];
     $output['raw'] = Html::escape($item->value);
-    try {
-      if ($this->parser && $this->parser->evaluate($output['raw'])) {
+    if ($this->parser && $this->parser->validateExpression($output['raw'])) {
+      try {
         $output['result'] = $this->parser->evaluate($output['raw'])->value();
         $output['tokens'] = $this->parser->expression();
         $output['tokens'] = $this->toArray($output['tokens']);
         $output['steps'] = $this->parser->steps();
       }
+      catch (InvalidTokenException $e) {
+        $output['result'] = $this->t("Malformed expression");
+        $output['tokens'][] = ['value' => $output['raw'], 'position' => 0];
+        $output['steps'] = [];
+      }
     }
-    catch (InvalidTokenException $e) {
-      $output['result'] = $e;
+    else {
+      $output['result'] = $this->t("Malformed expression");
+      $output['tokens'][] = ['value' => $output['raw'], 'position' => 0];
+      $output['steps'] = [];
     }
     return $output;
   }

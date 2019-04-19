@@ -102,6 +102,18 @@ interface LexerInterface {
    *   TRUE if is an operator or an operand
    *   FALSE otherwise
    */
-  public function isValid($op);
+  public function isValidToken($op);
+
+  /**
+   * Validate a mathematical expression.
+   *
+   * @param string $expression
+   *   The mathematical expression.
+   *
+   * @return bool
+   *   TRUE if is valid expression.
+   *   FALSE if contain unvalid tokens.
+   */
+  public function isValidExpression($expression);
 
 }

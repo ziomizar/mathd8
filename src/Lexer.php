@@ -49,6 +49,11 @@ class Lexer implements LexerInterface {
    * {@inheritdoc}
    */
   public function getTokens($expression) {
+
+    if (!$this->isValidexpression($expression)) {
+      throw new InvalidTokenException("The expression contains invalid tokens");
+    }
+
     $regexp = sprintf('/%s/', $this->getAllRegex());
     // TODO: make space insensitive the expression.
     preg_match_all($regexp, $expression, $matches);
@@ -61,7 +66,7 @@ class Lexer implements LexerInterface {
           // Is a space or an empty character.
           continue;
 
-        case $this->isValid($token):
+        case $this->isValidToken($token):
           $this->tokens[] = new Token($token, $key);
           break;
 
@@ -71,6 +76,19 @@ class Lexer implements LexerInterface {
       }
     }
     return $this->tokens;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function isValidExpression($expression) {
+    $regexp = sprintf('/%s/', $this->getAllRegex());
+    // Check if the expression contains only valid tokens.
+    if (!preg_match($regexp, $expression, $matches)) {
+      return FALSE;
+    }
+
+    return TRUE;
   }
 
   /**
@@ -142,7 +160,7 @@ class Lexer implements LexerInterface {
   /**
    * {@inheritdoc}
    */
-  public function isValid($op) {
+  public function isValidToken($op) {
     $valid = sprintf('/^%s$/', $this->getAllRegex());
     if (preg_match($valid, $op)) {
       return TRUE;

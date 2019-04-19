@@ -3,6 +3,7 @@
 namespace Drupal\mathd8;
 
 use Drupal\mathd8\Controller\Token;
+use Drupal\mathd8\Exception\InvalidTokenException;
 
 /**
  * Class ShuntingYardTrait.
@@ -42,8 +43,13 @@ trait ShuntingYardTrait {
    * @see https://en.wikipedia.org/wiki/Shunting-yard_algorithm
    */
   public function toPostfix($expression) {
+    try {
+      $tokens = $this->lexer->getTokens($expression);
+    }
+    catch (InvalidTokenException $e) {
+      $tokens = [];
+    }
 
-    $tokens = $this->lexer->getTokens($expression);
     $this->outputQueue = $this->operatorStack = [];
 
     foreach ($tokens as $key => $token) {

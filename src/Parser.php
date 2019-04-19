@@ -98,13 +98,21 @@ class Parser implements ParserInterface {
    */
   public function evaluate($expression) {
 
+    if (!$this->validateExpression($expression)) {
+      // The expression is invalid because contain invalid tokens.
+      throw new InvalidTokenException("The expression contain invalid tokens");
+    }
+
     $expr = $this->toPostfix($expression);
     $this->tokens = $this->lexer->getInfixTokens();
     // Reset the step list.
     $this->steps = [];
 
     foreach ($expr as $key => $token) {
-      if ($this->lexer->isOperator($token->value()) && count($this->stack) >= 2) {
+      if ($this->lexer->isOperator($token->value())) {
+        if (count($this->stack) < 2) {
+          throw new Exception("Invalid order of operands and operators");
+        }
         // TODO: check if there are 2 operands in stack.
         $op2 = $this->pop();
         $op1 = $this->pop();
@@ -126,11 +134,25 @@ class Parser implements ParserInterface {
         $this->push($token);
       }
       else {
-        throw new InvalidTokenException(sprintf("Token %s is not a valid token.", $token));
+        throw new InvalidTokenException(sprintf("Token %s is not a valid token.", $token->value()));
       }
     }
 
     return $this->pop();
+  }
+
+  /**
+   * Validate the mathematical expression.
+   *
+   * @param string $expression
+   *   The mathematical expression.
+   *
+   * @return bool
+   *   TRUE if a valid expression
+   *   FALSE if contain invalid tokens.
+   */
+  public function validateExpression($expression) {
+    return $this->lexer->isValidExpression($expression);
   }
 
 }
