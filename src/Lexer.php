@@ -5,6 +5,7 @@ namespace Drupal\mathd8;
 use Drupal\mathd8\Controller\Token;
 use Drupal\mathd8\Plugin\OperatorPluginManager;
 use Drupal\mathd8\Exception\InvalidTokenException;
+use Drupal\mathd8\Exception\MalformedExpressionException;
 
 /**
  * Class Lexer.
@@ -59,14 +60,27 @@ class Lexer implements LexerInterface {
 
     $this->tokens = [];
     foreach ($matches[0] as $key => $token) {
+      // This is used for validate the current char and so the infix expression.
+      $previous_token = end($this->tokens);
       // Remove all spaces from the token.
       $token = trim($token);
       switch (TRUE) {
         case empty($token):
-          // Is a space or an empty character.
+          // Is a space or an empty character, skip it.
           continue;
 
         case $this->isValidToken($token):
+          if ($previous_token) {
+            // Is not allowed having two operator next each other.
+            if ($this->isOperator($token) && $this->isOperator($previous_token->value())) {
+              throw new MalformedExpressionException("The expression have two followed operators without operand.");
+            }
+            // Is not allowed having two followed operands without an operator
+            // in the middle.
+            if ($this->isOperand($token) && $this->isOperand($previous_token->value())) {
+              throw new MalformedExpressionException("The expression have two followed operands without any operator. $token");
+            }
+          }
           $this->tokens[] = new Token($token, $key);
           break;
 

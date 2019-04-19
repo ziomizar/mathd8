@@ -150,6 +150,9 @@ class Mathd8FieldFormatter extends FormatterBase implements ContainerFactoryPlug
     $output['raw'] = Html::escape($item->value);
 
     $valid_expression = TRUE;
+    // The error message if there is any.
+    $error = '';
+
     if ($this->parser && $this->parser->validateExpression($output['raw'])) {
       try {
         $output['result'] = $this->parser->evaluate($output['raw'])->value();
@@ -160,9 +163,11 @@ class Mathd8FieldFormatter extends FormatterBase implements ContainerFactoryPlug
       }
       catch (InvalidTokenException $e) {
         $valid_expression = FALSE;
+        $error = $e->getMessage();
       }
       catch (MalformedExpressionException $e) {
         $valid_expression = FALSE;
+        $error = $e->getMessage();
       }
     }
     else {
@@ -173,7 +178,7 @@ class Mathd8FieldFormatter extends FormatterBase implements ContainerFactoryPlug
       // There is somethign wrong with the expression, or an invalid token
       // or a wrong order of the operands. Build a default array to report
       // the error.
-      $output['result'] = $this->t("Malformed expression");
+      $output['result'] = $this->t("Malformed expression: @exception", ['@exception' => $error]);
       $output['tokens'][] = ['value' => $output['raw'], 'position' => 0];
       $output['steps'] = [];
     }
