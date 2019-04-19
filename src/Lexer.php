@@ -49,7 +49,7 @@ class Lexer implements LexerInterface {
    * {@inheritdoc}
    */
   public function getTokens($expression) {
-    $regexp = $this->getAllRegex();
+    $regexp = sprintf('/%s/', $this->getAllRegex());
     // TODO: make space insensitive the expression.
     preg_match_all($regexp, $expression, $matches);
     $this->tokens = [];
@@ -112,7 +112,7 @@ class Lexer implements LexerInterface {
     $regexp[] = $this->getOperatorsRegex();
 
     // Build the final expression.
-    $regexp = sprintf('/%s/', implode('|', $regexp));
+    $regexp = implode('|', $regexp);
 
     return $regexp;
   }
@@ -143,7 +143,8 @@ class Lexer implements LexerInterface {
    * {@inheritdoc}
    */
   public function isValid($op) {
-    if (preg_match($this->getAllRegex(), $op)) {
+    $valid = sprintf('/^%s$/', $this->getAllRegex());
+    if (preg_match($valid, $op)) {
       return TRUE;
     }
     return FALSE;
