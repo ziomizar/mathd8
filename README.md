@@ -44,8 +44,8 @@ CONFIGURATION
  - go to `Administration > Structure > Content types > Article` 
  `[/admin/structure/types/manage/article]` 
  - Click on the tab `Manage display`
- - Select `Mathematical parser`
- - Enable or disable the `animation` checkbox in order to simulate the evaluation in the frontend.
+ - Select `Mathematical parser` in the column `FORMAT` of the `Body` field
+ - Click on the engine icon to open the setting to enable or disable the `animation` checkbox in order to simulate the evaluation in the frontend.
  - "Save"
  
 
