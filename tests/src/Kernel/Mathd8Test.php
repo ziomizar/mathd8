@@ -14,14 +14,14 @@ class Mathd8Test extends KernelTestBase {
   /**
    * The Lexer service.
    *
-   * @var Lexer
+   * @var \Drupal\mathd8\Lexer
    */
   protected $lexer;
 
   /**
    * The parser service.
    *
-   * @var Parser
+   * @var \Drupal\mathd8\Parser
    */
   protected $parser;
 
@@ -49,6 +49,9 @@ class Mathd8Test extends KernelTestBase {
    *   The mathematical extpression.
    * @param array $expected
    *   The expected result.
+   *
+   * @throws \Drupal\mathd8\Exception\InvalidTokenException.
+   *   In case has been used an invalid token in the expression.
    *
    * @dataProvider expressionLexerProvider
    */
@@ -87,6 +90,9 @@ class Mathd8Test extends KernelTestBase {
    *   The mathematical expression.
    * @param float $expected
    *   The expected result.
+   *
+   * @throws \Drupal\mathd8\Exception\InvalidTokenException.
+   *   In case has been used an invalid token in the expression.
    *
    * @dataProvider expressionParserProvider
    */

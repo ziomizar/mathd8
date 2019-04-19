@@ -3,9 +3,9 @@
 namespace Drupal\mathd8;
 
 /**
- * Interface Mathd8ParserInterface.
+ * Interface ParserInterface.
  */
-interface Mathd8ParserInterface {
+interface ParserInterface {
 
   /**
    * Constructs a new Mathd8Converter object.

@@ -10,7 +10,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\mathd8\Mathd8Parser;
+use Drupal\mathd8\Parser;
+use Drupal\mathd8\Exception\InvalidTokenException;
 
 /**
  * Plugin implementation of the 'mathd_parser_formatter' formatter.
@@ -30,7 +31,7 @@ class Mathd8FieldFormatter extends FormatterBase implements ContainerFactoryPlug
   /**
    * The mathematical parser service.
    *
-   * @var \Drupal\mathd8\Mathd8Parser
+   * @var \Drupal\mathd8\Parser
    */
   protected $parser;
 
@@ -51,12 +52,12 @@ class Mathd8FieldFormatter extends FormatterBase implements ContainerFactoryPlug
    *   The view mode.
    * @param array $third_party_settings
    *   Any third party settings.
-   * @param \Drupal\mathd8\Mathd8Parser $mathd8_parser
+   * @param \Drupal\mathd8\Parser $parser
    *   The mathd8 parser service.
    */
-  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, $label, $view_mode, array $third_party_settings, Mathd8Parser $mathd8_parser) {
+  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, $label, $view_mode, array $third_party_settings, Parser $parser) {
     parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $label, $view_mode, $third_party_settings);
-    $this->parser = $mathd8_parser;
+    $this->parser = $parser;
   }
 
   /**
@@ -145,11 +146,16 @@ class Mathd8FieldFormatter extends FormatterBase implements ContainerFactoryPlug
     // should equal the output, including newlines.
     $output = [];
     $output['raw'] = Html::escape($item->value);
-    if ($this->parser->evaluate($output['raw'])) {
-      $output['result'] = $this->parser->evaluate($output['raw'])->value();
-      $output['tokens'] = $this->parser->expression();
-      $output['tokens'] = $this->toArray($output['tokens']);
-      $output['steps'] = $this->parser->steps();
+    try {
+      if ($this->parser && $this->parser->evaluate($output['raw'])) {
+        $output['result'] = $this->parser->evaluate($output['raw'])->value();
+        $output['tokens'] = $this->parser->expression();
+        $output['tokens'] = $this->toArray($output['tokens']);
+        $output['steps'] = $this->parser->steps();
+      }
+    }
+    catch (InvalidTokenException $e) {
+      $output['result'] = $e;
     }
     return $output;
   }

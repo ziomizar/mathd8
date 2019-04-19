@@ -3,7 +3,7 @@ services:
     class: Drupal\mathd8\Plugin\OperatorPluginManager
     parent: default_plugin_manager
   mathd8.parser:
-    class: Drupal\mathd8\Mathd8Parser
+    class: Drupal\mathd8\Parser
     arguments: ['@mathd8.lexer']
   mathd8.lexer:
     class: Drupal\mathd8\Lexer

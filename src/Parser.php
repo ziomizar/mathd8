@@ -3,11 +3,12 @@
 namespace Drupal\mathd8;
 
 use Drupal\mathd8\Controller\Token;
+use Drupal\mathd8\Exception\InvalidTokenException;
 
 /**
- * Class Mathd8Parser.
+ * Class Parser.
  */
-class Mathd8Parser implements Mathd8ParserInterface {
+class Parser implements ParserInterface {
 
   use ShuntingYardTrait;
 
@@ -64,7 +65,6 @@ class Mathd8Parser implements Mathd8ParserInterface {
    */
   private function push(Token $op) {
     if ($op) {
-      // TODO: check better if is numeric or a valid operator.
       array_push($this->stack, $op);
     }
   }
@@ -104,12 +104,13 @@ class Mathd8Parser implements Mathd8ParserInterface {
     $this->steps = [];
 
     foreach ($expr as $key => $token) {
-      if (isset($this->operators[$token->value()])) {
+      if ($this->lexer->isOperator($token->value()) && count($this->stack) >= 2) {
         // TODO: check if there are 2 operands in stack.
         $op2 = $this->pop();
         $op1 = $this->pop();
+        $operator = $this->operators[$token->value()];
 
-        $result = $this->operators[$token->value()]->evaluate($op1->value(), $op2->value());
+        $result = $operator->evaluate($op1->value(), $op2->value());
         $result = new Token($result, 'result-step-' . count($this->steps));
         $this->push($result);
 
@@ -121,11 +122,11 @@ class Mathd8Parser implements Mathd8ParserInterface {
           'result' => $result->position(),
         ];
       }
-      elseif (is_numeric($token->value())) {
+      elseif ($this->lexer->isOperand($token->value())) {
         $this->push($token);
       }
       else {
-        // TODO: Exception.
+        throw new InvalidTokenException(sprintf("Token %s is not a valid token.", $token));
       }
     }
 

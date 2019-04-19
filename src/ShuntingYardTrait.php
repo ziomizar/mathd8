@@ -47,27 +47,33 @@ trait ShuntingYardTrait {
     $this->outputQueue = $this->operatorStack = [];
 
     foreach ($tokens as $key => $token) {
-      if (is_numeric($token->value())) {
+      if ($this->lexer->isOperand($token->value())) {
+        // Add the operand to the output queue.
         $this->addToOutput($token);
       }
-      if (array_key_exists($token->value(), $this->operators)) {
+      elseif ($this->lexer->isOperator($token->value())) {
         // Pop all the operators with higher prio from the stack.
         if (is_array($this->operatorStack)) {
           foreach ($this->operatorStack as $op_in_stack) {
             // The operator has already been checked and pushed,
             // so for sure is defined.
-            if ($this->operators[$op_in_stack->value()]->precedence() >= $this->operators[$token->value()]->precedence()) {
+            $operator_in_stack = $this->operators[$op_in_stack->value()];
+            $operator = $this->operators[$token->value()];
+            if ($operator_in_stack->precedence() >= $operator->precedence()) {
+              // The operator in stack have higher precedence than the current
+              // token. Remove it from the operator stack and return its value.
               $this->addToOutput($this->extractOperator());
             }
           }
         }
-        // When all the oeprators with more prio in the stack
-        // has been evaluated add this operator.
+        // When all the operators in the stack with higher precedence has been
+        // evaluated add the current operator in the stack.
         $this->addOperator($token);
       }
     }
 
-    // If there are still operator token on the stack.
+    // If there are still operator token on the stack put all of them in the
+    // output queue.
     while (count($this->operatorStack)) {
       $this->addToOutput($this->extractOperator());
     }
