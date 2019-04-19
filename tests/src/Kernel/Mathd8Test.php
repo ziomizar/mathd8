@@ -93,6 +93,8 @@ class Mathd8Test extends KernelTestBase {
    *
    * @throws \Drupal\mathd8\Exception\InvalidTokenException.
    *   In case has been used an invalid token in the expression.
+   * @throws \Drupal\mathd8\Exception\MalformedExpressionException.
+   *   In case has been used an invalid token in the expression.
    *
    * @dataProvider expressionParserProvider
    */

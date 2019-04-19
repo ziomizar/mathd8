@@ -4,6 +4,7 @@ namespace Drupal\mathd8;
 
 use Drupal\mathd8\Controller\Token;
 use Drupal\mathd8\Exception\InvalidTokenException;
+use Drupal\mathd8\Exception\MalformedExpressionException;
 
 /**
  * Class Parser.
@@ -111,7 +112,7 @@ class Parser implements ParserInterface {
     foreach ($expr as $key => $token) {
       if ($this->lexer->isOperator($token->value())) {
         if (count($this->stack) < 2) {
-          throw new Exception("Invalid order of operands and operators");
+          throw new MalformedExpressionException("Invalid order of operands and operators");
         }
         // TODO: check if there are 2 operands in stack.
         $op2 = $this->pop();

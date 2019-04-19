@@ -12,6 +12,7 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\mathd8\Parser;
 use Drupal\mathd8\Exception\InvalidTokenException;
+use Drupal\mathd8\Exception\MalformedExpressionException;
 
 /**
  * Plugin implementation of the 'mathd_parser_formatter' formatter.
@@ -142,10 +143,10 @@ class Mathd8FieldFormatter extends FormatterBase implements ContainerFactoryPlug
    *   The textual output generated.
    */
   protected function viewValue(FieldItemInterface $item) {
-    // The text value has no text format assigned to it, so the user input
-    // should equal the output, including newlines.
     $output = [];
     $output['raw'] = Html::escape($item->value);
+
+    $valid_expression = TRUE;
     if ($this->parser && $this->parser->validateExpression($output['raw'])) {
       try {
         $output['result'] = $this->parser->evaluate($output['raw'])->value();
@@ -154,16 +155,23 @@ class Mathd8FieldFormatter extends FormatterBase implements ContainerFactoryPlug
         $output['steps'] = $this->parser->steps();
       }
       catch (InvalidTokenException $e) {
-        $output['result'] = $this->t("Malformed expression");
-        $output['tokens'][] = ['value' => $output['raw'], 'position' => 0];
-        $output['steps'] = [];
+        $valid_expression = FALSE;
+      }
+      catch (MalformedExpressionException $e) {
+        $valid_expression = FALSE;
       }
     }
     else {
+      $valid_expression = FALSE;
+    }
+
+    if (!$valid_expression) {
+      // Send a default message with the error.
       $output['result'] = $this->t("Malformed expression");
       $output['tokens'][] = ['value' => $output['raw'], 'position' => 0];
       $output['steps'] = [];
     }
+
     return $output;
   }
 
