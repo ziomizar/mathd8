@@ -15,25 +15,27 @@ the result.
 It can show an animation that visualize the steps and the grouping applied by the algorithm.
 
  * For a full description of the module, visit the project page:
-   githubpage
+   https://github.com/ziomizar/mathd8
     
 INSTALLATION
 ------------
  
- * clone the repository to the module folder
- 
- git clone repoid
+ * clone the repository to the module folder 
+   `git clone git@github.com:ziomizar/mathd8.git`
+ * enable the mathd8 using "drush en mathd8" or from the administration `/admin/modules`   
 
 CONFIGURATION
 -------------
 
- This module provide a field formatter that can be used in all the "text" fields.
- To configure it for example for the body of the "Article" nodes go to 
- * Administration > Structure > Content types > Article
+ This module provide a field formatter that can be used in all the "text" fields. To configure it use the formatter "Mathematical parser" on a text field from the "Manage display".
  
- - Click on the tab "Manage display"
- - Select "Mathematical parser"
- - Enable or disable an animation on the parsing 
+ As an example to enable the "Mathematical parser" on the body field of the "Article" nodes:
+ 
+ - go to `Administration > Structure > Content types > Article` 
+ `[/admin/structure/types/manage/article]` 
+ - Click on the tab `Manage display`
+ - Select `Mathematical parser`
+ - Enable or disable the `animation` checkbox in order to simulate the evaluation in the frontend.
  - "Save"
  
 
