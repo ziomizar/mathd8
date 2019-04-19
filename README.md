@@ -23,6 +23,9 @@ INSTALLATION
  * clone the repository to the module folder 
    `git clone git@github.com:ziomizar/mathd8.git`
  * enable the mathd8 using "drush en mathd8" or from the administration `/admin/modules`   
+ 
+ * for further information about how to install a contributed Drupal module. Visit:
+   https://www.drupal.org/documentation/install/modules-themes/modules-8
 
 CONFIGURATION
 -------------
