@@ -1,9 +1,6 @@
 MATHEMATICAL LEXER AND PARSER in Drupal 8
 -----------------------------------------
-
-CONTENTS OF THIS FILE
----------------------
-   
+  
  * Introduction
  * Installation
  * Configuration
