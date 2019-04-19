@@ -136,6 +136,9 @@ class Mathd8FieldFormatter extends FormatterBase implements ContainerFactoryPlug
   /**
    * Generate the output appropriate for one field item.
    *
+   * The function return all the data needed to build the expression and its
+   * result. It have also extra information needed to run an animation.
+   *
    * @param \Drupal\Core\Field\FieldItemInterface $item
    *   One field item.
    *
@@ -150,6 +153,7 @@ class Mathd8FieldFormatter extends FormatterBase implements ContainerFactoryPlug
     if ($this->parser && $this->parser->validateExpression($output['raw'])) {
       try {
         $output['result'] = $this->parser->evaluate($output['raw'])->value();
+        /* @var \Drupal\mathd8\Controller\Token[] $output['tokens'] */
         $output['tokens'] = $this->parser->expression();
         $output['tokens'] = $this->toArray($output['tokens']);
         $output['steps'] = $this->parser->steps();
@@ -166,7 +170,9 @@ class Mathd8FieldFormatter extends FormatterBase implements ContainerFactoryPlug
     }
 
     if (!$valid_expression) {
-      // Send a default message with the error.
+      // There is somethign wrong with the expression, or an invalid token
+      // or a wrong order of the operands. Build a default array to report
+      // the error.
       $output['result'] = $this->t("Malformed expression");
       $output['tokens'][] = ['value' => $output['raw'], 'position' => 0];
       $output['steps'] = [];

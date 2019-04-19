@@ -55,8 +55,8 @@ class Lexer implements LexerInterface {
     }
 
     $regexp = sprintf('/%s/', $this->getAllRegex());
-    // TODO: make space insensitive the expression.
     preg_match_all($regexp, $expression, $matches);
+
     $this->tokens = [];
     foreach ($matches[0] as $key => $token) {
       // Remove all spaces from the token.

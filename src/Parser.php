@@ -111,18 +111,26 @@ class Parser implements ParserInterface {
 
     foreach ($expr as $key => $token) {
       if ($this->lexer->isOperator($token->value())) {
+
+        // Check if there are at least two operands already in the stack,
+        // to be a valid expression.
         if (count($this->stack) < 2) {
           throw new MalformedExpressionException("Invalid order of operands and operators");
         }
-        // TODO: check if there are 2 operands in stack.
+
         $op2 = $this->pop();
         $op1 = $this->pop();
         $operator = $this->operators[$token->value()];
 
         $result = $operator->evaluate($op1->value(), $op2->value());
+        // Save the result of this operation as a token with a custom position
+        // used as id.
         $result = new Token($result, 'result-step-' . count($this->steps));
         $this->push($result);
 
+        // A step is composed by:
+        // - the positions/id of all the tokens interested in an evaluation.
+        // - the result of the evaluation.
         $this->steps[] = [
           'op1' => $op1->position(),
           'op2' => $op2->position(),

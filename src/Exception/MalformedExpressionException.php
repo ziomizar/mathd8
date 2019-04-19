@@ -5,7 +5,7 @@ namespace Drupal\mathd8\Exception;
 use Exception;
 
 /**
- * Class InvalidTokenException.
+ * Class MalformedExpressionException.
  */
 class MalformedExpressionException extends Exception {
 
