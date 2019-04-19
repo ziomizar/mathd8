@@ -45,55 +45,62 @@ class Mathd8Test extends KernelTestBase {
   /**
    * Test if the Lexer tokenize properly the expression.
    *
-   * @dataProvider expressionLexerProvider
-   *
    * @param string $expression
    *   The mathematical extpression.
-   *
    * @param array $expected
    *   The expected result.
+   *
+   * @dataProvider expressionLexerProvider
    */
   public function testLexerTokenizer($expression, array $expected) {
+    /** @var \Drupal\mathd8\Controller\Token[] $result */
     $result = $this->lexer->getTokens($expression);
+    array_walk($result, function (&$token) {
+      $token = $token->value();
+    });
     $this->assertEquals($expected, $result);
   }
 
   /**
    * Test if the Lexer convert to postfix properly the expression.
    *
-   * @dataProvider postfixLexerProvider
-   *
-   * @param $expression
+   * @param string $expression
    *   The mathematical extpression.
-   *
-   * @param $expected
+   * @param array $expected
    *   The expected result.
+   *
+   * @dataProvider postfixLexerProvider
    */
-  public function testLexerToPosix($expression, $expected) {
+  public function testLexerToPosix($expression, array $expected) {
+    /** @var \Drupal\mathd8\Controller\Token[] $result */
     $result = $this->parser->toPostfix($expression);
+    array_walk($result, function (&$token) {
+      $token = $token->value();
+    });
     $this->assertEquals($expected, $result);
   }
 
   /**
    * Test if the Parser compute properly the expression.
    *
-   * @dataProvider expressionParserProvider
-   *
-   * @param $expression
+   * @param string $expression
    *   The mathematical expression.
-   *
-   * @param $expected
+   * @param float $expected
    *   The expected result.
+   *
+   * @dataProvider expressionParserProvider
    */
   public function testParserResult($expression, $expected) {
+    /** @var \Drupal\mathd8\Controller\Token $result */
     $result = $this->parser->evaluate($expression);
-    $this->assertEquals($expected, $result);
+    $this->assertEquals($expected, $result->value());
   }
 
   /**
    * The parser data provider.
    *
    * @return array
+   *   Array of expressions with their results.
    */
   public function expressionParserProvider() {
     return [
@@ -104,9 +111,10 @@ class Mathd8Test extends KernelTestBase {
   }
 
   /**
-   * The lexer data provider.
+   * The lexer (infix) data provider.
    *
    * @return array
+   *   Array of expression and tokenization.
    */
   public function expressionLexerProvider() {
     return [
@@ -117,9 +125,10 @@ class Mathd8Test extends KernelTestBase {
   }
 
   /**
-   * The lexer data provider.
+   * The lexer (postfix) data provider.
    *
    * @return array
+   *   Array of expression and tokenization.
    */
   public function postfixLexerProvider() {
     return [
