@@ -14,8 +14,15 @@ It can be used as a field formatter for the text field, to display the expressio
 the result. 
 It can show an animation that visualize the steps and the grouping applied by the algorithm.
 
- * For a full description of the module, visit the project page:
-   https://github.com/ziomizar/mathd8
+For a full description of the module, visit the project page:
+https://github.com/ziomizar/mathd8
+
+LIMITATIONS
+-----------
+
+The current version, it only support:
+ - basic operators: + - / *
+ - integer numbers
     
 INSTALLATION
 ------------
