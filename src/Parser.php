@@ -21,14 +21,14 @@ class Parser implements ParserInterface {
   protected $lexer;
 
   /**
-   * The stack used to compute the expression.
+   * The stack used to compute the postfix expression.
    *
    * @var array
    */
   protected $stack;
 
   /**
-   * An array of tokens.
+   * An array of tokens from the original expression in infix order.
    *
    * @var array
    */
@@ -99,21 +99,25 @@ class Parser implements ParserInterface {
    */
   public function evaluate($expression) {
 
+    // TODO: check when the expression is null or empty.
+
     if (!$this->validateExpression($expression)) {
       // The expression is invalid because contain invalid tokens.
       throw new InvalidTokenException("The expression contain invalid tokens");
     }
 
+    // Get the expression is postfix format.
+    /** @var \Drupal\mathd8\Controller\Token[] $expr */
     $expr = $this->toPostfix($expression);
+    // Get the original infix format of the expression.
+    /** @var \Drupal\mathd8\Controller\Token[] $tokens */
     $this->tokens = $this->lexer->getInfixTokens();
     // Reset the step list.
     $this->steps = [];
 
     foreach ($expr as $key => $token) {
       if ($this->lexer->isOperator($token->value())) {
-
-        // Check if there are at least two operands already in the stack,
-        // to be a valid expression.
+        // Check if at least two operands are already in the stack.
         if (count($this->stack) < 2) {
           throw new MalformedExpressionException("Invalid order of operands and operators");
         }
@@ -151,17 +155,13 @@ class Parser implements ParserInterface {
   }
 
   /**
-   * Validate the mathematical expression.
-   *
-   * @param string $expression
-   *   The mathematical expression.
-   *
-   * @return bool
-   *   TRUE if a valid expression
-   *   FALSE if contain invalid tokens.
+   * {@inheritdoc}
    */
   public function validateExpression($expression) {
-    return $this->lexer->isValidExpression($expression);
+    if (!$this->lexer->isValidExpression($expression) || !$this->lexer->haveInvalidTokens($expression)) {
+      return FALSE;
+    }
+    return TRUE;
   }
 
 }

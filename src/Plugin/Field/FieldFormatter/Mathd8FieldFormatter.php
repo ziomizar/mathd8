@@ -153,13 +153,16 @@ class Mathd8FieldFormatter extends FormatterBase implements ContainerFactoryPlug
     // The error message if there is any.
     $error = '';
 
-    if ($this->parser && $this->parser->validateExpression($output['raw'])) {
+    if ($this->parser) {
       try {
-        $output['result'] = $this->parser->evaluate($output['raw'])->value();
-        /** @var \Drupal\mathd8\Controller\Token[] $tokens */
-        $tokens = $this->parser->expression();
-        $output['tokens'] = $this->toArray($tokens);
-        $output['steps'] = $this->parser->steps();
+        $result = $this->parser->evaluate($output['raw']);
+        if ($result) {
+          $output['result'] = $result->value();
+          /** @var \Drupal\mathd8\Controller\Token[] $tokens */
+          $tokens = $this->parser->expression();
+          $output['tokens'] = $this->toArray($tokens);
+          $output['steps'] = $this->parser->steps();
+        }
       }
       catch (InvalidTokenException $e) {
         $valid_expression = FALSE;

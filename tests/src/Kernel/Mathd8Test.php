@@ -3,6 +3,8 @@
 namespace Drupal\Tests\mathd8\Kernel;
 
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\mathd8\Exception\InvalidTokenException;
+use Drupal\mathd8\Exception\MalformedExpressionException;
 
 /**
  * Tests Lexer and Parser.
@@ -103,7 +105,45 @@ class Mathd8Test extends KernelTestBase {
   public function testParserResult($expression, $expected) {
     /** @var \Drupal\mathd8\Controller\Token $result */
     $result = $this->parser->evaluate($expression);
-    $this->assertEquals($expected, $result->value());
+    $this->assertEquals($expected, ($result ? $result->value() : ''));
+  }
+
+  /**
+   * Test if the Parser manage properly the invalidTokenException.
+   *
+   * @param string $expression
+   *   The mathematical expression.
+   *
+   * @throws \Drupal\mathd8\Exception\InvalidTokenException.
+   *   In case has been used an invalid token in the expression.
+   * @throws \Drupal\mathd8\Exception\MalformedExpressionException.
+   *   In case has been used an invalid token in the expression.
+   *
+   * @dataProvider invalidTokenProvider
+   */
+  public function testInvalidTokenParserResult($expression) {
+    $this->setExpectedException(InvalidTokenException::class);
+    /** @var \Drupal\mathd8\Controller\Token $result */
+    $this->parser->evaluate($expression);
+  }
+
+  /**
+   * Test if the Parser manage properly the malformedExpressionException.
+   *
+   * @param string $expression
+   *   The mathematical expression.
+   *
+   * @throws \Drupal\mathd8\Exception\InvalidTokenException.
+   *   In case has been used an invalid token in the expression.
+   * @throws \Drupal\mathd8\Exception\MalformedExpressionException.
+   *   In case has been used an invalid token in the expression.
+   *
+   * @dataProvider malformedExpressionProvider
+   */
+  public function testMalformedExpressionParserResult($expression) {
+    $this->setExpectedException(MalformedExpressionException::class);
+    /** @var \Drupal\mathd8\Controller\Token $result */
+    $this->parser->evaluate($expression);
   }
 
   /**
@@ -114,6 +154,9 @@ class Mathd8Test extends KernelTestBase {
    */
   public function expressionParserProvider() {
     return [
+      ['', ''],
+      [' ', ''],
+      ['80', '80'],
       ['1 * 2 / 3 - 4', -3.3333333333333],
       ['1 + 2 * 8 / 9', 2.77777777778],
       ['4 / 2 * 100 - 2 + 80', 278],
@@ -128,6 +171,9 @@ class Mathd8Test extends KernelTestBase {
    */
   public function expressionLexerProvider() {
     return [
+      ['', []],
+      [' ', []],
+      ['80', ['80']],
       ['1 * 2 / 3 - 4', [1, '*', 2, '/', 3, '-', 4]],
       ['1 + 2 * 8 / 9', [1, '+', 2, '*', 8, '/', 9]],
       ['4 / 2 * 100 - 2 + 80', [4, '/', 2, '*', 100, '-', 2, '+', 80]],
@@ -150,6 +196,44 @@ class Mathd8Test extends KernelTestBase {
       ['4 / 2 * 100 - 2 + 80 / 2 * 1111',
         [4, 2, '/', 100, '*', 2, '-', 80, 2, '/', 1111, '*', '+'],
       ],
+    ];
+  }
+
+  /**
+   * Invalid tokens data provider.
+   *
+   * @return array
+   *   Array of expressions with invalid tokens.
+   */
+  public function invalidTokenProvider() {
+    return [
+      ['1 + 2 * 8 / 9LLLL'],
+      ['4 /Z 2 * 100 - 2 + 80'],
+      ['@ 100 - 2 + 80'],
+      ['10.0 - 2 + 80'],
+    ];
+  }
+
+  /**
+   * Malformed expressions data provider.
+   *
+   * @return array
+   *   Array of malformed expressions.
+   */
+  public function malformedExpressionProvider() {
+    return [
+      // Operator at the beginning, end or both.
+      ['1 * 2 / 3 - 4 +'],
+      ['+ 1 * 2 / 3 - 4'],
+      ['+ 1 * 2 / 3 - 4 -'],
+      // Double operator without operands.
+      ['1 + 2 * + 8 / 9'],
+      ['4 / / 2 * / 100 - 2 + 80'],
+      // Double operands without operators.
+      ['4 2 * / 100 - 2 + 80'],
+      ['4 + 2 8 8 * / 100 100 - 2 + 80'],
+      // Single number or empty expression.
+      ['80 80'],
     ];
   }
 

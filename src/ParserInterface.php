@@ -42,4 +42,16 @@ interface ParserInterface {
    */
   public function evaluate($expression);
 
+  /**
+   * Validate the mathematical expression.
+   *
+   * @param string $expression
+   *   The mathematical expression.
+   *
+   * @return bool
+   *   TRUE if a valid expression
+   *   FALSE if contain invalid tokens.
+   */
+  public function validateExpression($expression);
+
 }

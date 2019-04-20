@@ -18,6 +18,12 @@ class Lexer implements LexerInterface {
   const OPERAND_REGEXP = '([0-9]*)';
 
   /**
+   * Valid character for operand.
+   */
+  const OPERAND_VALID_CHARS = '0-9';
+
+
+  /**
    * An array of operators.
    *
    * @var array
@@ -51,7 +57,7 @@ class Lexer implements LexerInterface {
    */
   public function getTokens($expression) {
 
-    if (!$this->isValidexpression($expression)) {
+    if (!$this->isValidExpression($expression) || !$this->haveInvalidTokens($expression)) {
       throw new InvalidTokenException("The expression contains invalid tokens");
     }
 
@@ -60,35 +66,27 @@ class Lexer implements LexerInterface {
 
     $this->tokens = [];
     foreach ($matches[0] as $key => $token) {
-      // This is used for validate the current char and so the infix expression.
+      // Used for validate the current char and so the infix expression.
       $previous_token = end($this->tokens);
       // Remove all spaces from the token.
       $token = trim($token);
-      switch (TRUE) {
-        case empty($token):
-          // Is a space or an empty character, skip it.
-          continue;
-
-        case $this->isValidToken($token):
-          if ($previous_token) {
-            // Is not allowed having two operator next each other.
-            if ($this->isOperator($token) && $this->isOperator($previous_token->value())) {
-              throw new MalformedExpressionException("The expression have two followed operators without operand.");
-            }
-            // Is not allowed having two followed operands without an operator
-            // in the middle.
-            if ($this->isOperand($token) && $this->isOperand($previous_token->value())) {
-              throw new MalformedExpressionException("The expression have two followed operands without any operator. $token");
-            }
+      if (!empty($token) && $this->haveInvalidTokens($token)) {
+        if ($previous_token) {
+          // Is not allowed having two operator next each other.
+          if ($this->isOperator($token) && $this->isOperator($previous_token->value())) {
+            throw new MalformedExpressionException("The expression have two followed operators without operand.");
           }
-          $this->tokens[] = new Token($token, $key);
-          break;
+          // Is not allowed having two followed operands without an operator
+          // in the middle.
+          if ($this->isOperand($token) && $this->isOperand($previous_token->value())) {
+            throw new MalformedExpressionException("The expression have two followed operands without any operator. $token");
+          }
+        }
+        $this->tokens[] = new Token($token, $key);
 
-        default:
-          // Has been used an invalid non empty character.
-          throw new InvalidTokenException(sprintf("Token %s is not a valid token.", $token));
       }
     }
+
     return $this->tokens;
   }
 
@@ -174,9 +172,19 @@ class Lexer implements LexerInterface {
   /**
    * {@inheritdoc}
    */
-  public function isValidToken($op) {
-    $valid = sprintf('/^%s$/', $this->getAllRegex());
-    if (preg_match($valid, $op)) {
+  public function haveInvalidTokens($op) {
+    // Get all the valid characters for operands.
+    $valid_chars[] = self::OPERAND_VALID_CHARS;
+    // Get all the valid chars for operators.
+    foreach ($this->operators as $key => $operator) {
+      $valid_chars[] = sprintf('\%s', $key);
+    }
+    // Add empty characters as valid string (spaces, new lines, etc..).
+    $valid_chars[] = '\s';
+
+    $regexp = sprintf('/[^%s]/', implode('', $valid_chars));
+
+    if (!preg_match($regexp, $op, $matches)) {
       return TRUE;
     }
     return FALSE;
