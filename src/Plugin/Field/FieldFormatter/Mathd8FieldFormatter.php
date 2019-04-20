@@ -178,7 +178,7 @@ class Mathd8FieldFormatter extends FormatterBase implements ContainerFactoryPlug
     }
 
     if (!$valid_expression) {
-      // There is somethign wrong with the expression, or an invalid token
+      // There is something wrong with the expression, or an invalid token
       // or a wrong order of the operands. Build a default array to report
       // the error.
       $output['result'] = $this->t("Malformed expression: @exception", ['@exception' => $error]);

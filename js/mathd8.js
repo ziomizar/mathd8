@@ -11,11 +11,8 @@
         // Group together all the token active in this step and group
         // them with parenthesis.
         $('.token-active')
-          .wrapAll("<div class='token-result " + 'token-' + step.result + "' />");
-        
-        // All the token of this step has been evaluated set them to default.
-        $('.token-active').removeClass('token-active');
-        
+          .wrapAll("<div class='token-result " + 'token-' + step.result + "' />")
+          .removeClass('token-active');
       }
       
       function parse() {

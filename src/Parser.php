@@ -98,9 +98,6 @@ class Parser implements ParserInterface {
    * {@inheritdoc}
    */
   public function evaluate($expression) {
-
-    // TODO: check when the expression is null or empty.
-
     if (!$this->validateExpression($expression)) {
       // The expression is invalid because contain invalid tokens.
       throw new InvalidTokenException("The expression contain invalid tokens");

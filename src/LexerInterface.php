@@ -31,6 +31,11 @@ interface LexerInterface {
    * @param string $expression
    *   The mathematical expression.
    *
+   * @throws \Drupal\mathd8\Exception\InvalidTokenException.
+   *   In case has been used an invalid token in the expression.
+   * @throws \Drupal\mathd8\Exception\MalformedExpressionException.
+   *   In case has been used an invalid token in the expression.
+   *
    * @return array
    *   Array of token objects.
    */
@@ -44,7 +49,7 @@ interface LexerInterface {
    *
    * @return bool
    *   TRUE if is valid expression.
-   *   FALSE if contain unvalid tokens.
+   *   FALSE if contain invalid tokens.
    */
   public function isValidExpression($expression);
 

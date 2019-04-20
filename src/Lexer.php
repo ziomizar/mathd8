@@ -22,7 +22,6 @@ class Lexer implements LexerInterface {
    */
   const OPERAND_VALID_CHARS = '0-9';
 
-
   /**
    * An array of operators.
    *

@@ -48,7 +48,7 @@ class Mathd8Test extends KernelTestBase {
    * Test if the Lexer tokenize properly the expression.
    *
    * @param string $expression
-   *   The mathematical extpression.
+   *   The mathematical expression.
    * @param array $expected
    *   The expected result.
    *
@@ -72,7 +72,7 @@ class Mathd8Test extends KernelTestBase {
    * Test if the Lexer convert to postfix properly the expression.
    *
    * @param string $expression
-   *   The mathematical extpression.
+   *   The mathematical expression.
    * @param array $expected
    *   The expected result.
    *

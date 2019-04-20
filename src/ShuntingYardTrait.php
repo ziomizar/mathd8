@@ -59,7 +59,7 @@ trait ShuntingYardTrait {
         $this->addToOutput($token);
       }
       elseif ($this->lexer->isOperator($token->value())) {
-        // Pop all the operators with higher prio from the stack.
+        // Pop all the operators with higher precedence from the stack.
         if (is_array($this->operatorStack)) {
           foreach ($this->operatorStack as $op_in_stack) {
             // The operator has already been checked and pushed,
@@ -99,7 +99,7 @@ trait ShuntingYardTrait {
   }
 
   /**
-   * Remove and return an operator from the oprerator stack.
+   * Remove and return an operator from the operator stack.
    *
    * @return \Drupal\mathd8\Controller\Token
    *   The Token object.

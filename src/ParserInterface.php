@@ -48,6 +48,11 @@ interface ParserInterface {
    * @param string $expression
    *   The mathematical expression.
    *
+   * @throws \Drupal\mathd8\Exception\InvalidTokenException.
+   *   In case has been used an invalid token in the expression.
+   * @throws \Drupal\mathd8\Exception\MalformedExpressionException.
+   *   In case has been used an invalid token in the expression.
+   *
    * @return bool
    *   TRUE if a valid expression
    *   FALSE if contain invalid tokens.

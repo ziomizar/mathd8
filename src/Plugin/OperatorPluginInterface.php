@@ -10,7 +10,7 @@ use Drupal\Component\Plugin\PluginInspectionInterface;
 interface OperatorPluginInterface extends PluginInspectionInterface {
 
   /**
-   * Get the precedende of an operator.
+   * Get the precedence of an operator.
    *
    * @return int
    *   The precedence of the operator.
