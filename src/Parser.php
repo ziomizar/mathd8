@@ -59,7 +59,7 @@ class Parser implements ParserInterface {
   }
 
   /**
-   * Get the expression as an array of Token.
+   * Push a new Token in the stack.
    *
    * @params \Drupal\mathd8\Controller\Token $op
    *   A Token objects.
