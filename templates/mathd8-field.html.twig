@@ -8,6 +8,12 @@
  *   - position: the position of the token in the expression
  *   - value: the symbol or the value of the token.
  * - result: the result of the expression.
+ * - steps: The list of all the operations executed.
+ *   - op1: the first operand
+ *   - op2: the second operand
+ *   - operator: the operator
+ *   - result: result ID of the operation
+ *   - result_value: result value of the operation
  */
 #}
 
@@ -20,4 +26,17 @@
   <span> = </span>
 
   <span>{{ result }}</span>
+
+  <div class="steps">
+    {% for step in steps %}
+      <span
+        class="step step-{{ step.result }}"
+        data-op1="{{ step.op1 }}"
+        data-op2="{{ step.op2 }}"
+        data-operator="{{ step.operator }}"
+        data-result="{{ step.result_value }}"
+        data-result-id="{{ step.result }}">
+      </span>
+    {% endfor %}
+  </div>
 </div>

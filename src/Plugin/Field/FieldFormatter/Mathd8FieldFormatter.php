@@ -112,6 +112,7 @@ class Mathd8FieldFormatter extends FormatterBase implements ContainerFactoryPlug
         '#result' => $value['result'],
         '#raw' => $value['expression'],
         '#tokens' => $value['tokens'],
+        '#steps' => $value['steps'],
         '#cache' => [
           'max-age' => 0,
         ],
@@ -122,7 +123,6 @@ class Mathd8FieldFormatter extends FormatterBase implements ContainerFactoryPlug
           ],
           'drupalSettings' => [
             'mathd8' => [
-              'steps' => $value['steps'],
               'animation' => $this->getSetting('animation'),
             ],
           ],
