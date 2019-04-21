@@ -53,9 +53,7 @@ class FilterMathParser extends FilterBase {
    * {@inheritdoc}
    */
   public function tips($long = FALSE) {
-    return [
-      $this->t('In the mathematical parser filter only spaces, integer numbers and + - / * operators are allowed.'),
-    ];
+    return $this->t('Only spaces, integer numbers and + - / * operators are allowed. Its possible write and compute just one expression.');
   }
 
   /**
