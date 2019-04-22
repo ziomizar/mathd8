@@ -75,7 +75,7 @@ class FilterMathParser extends FilterBase implements ContainerFactoryPluginInter
    * {@inheritdoc}
    */
   public function tips($long = FALSE) {
-    return $this->t('Only spaces, integer numbers and + - / * operators are allowed. Its possible write and compute just one expression.');
+    return $this->t('You can write expressions in the format [formula:1+2+3+4+5*12-14] only spaces, integer numbers and + - / * operators are allowed. Its possible write and compute multiple expressions in the same field, and write text around it.');
   }
 
   /**
