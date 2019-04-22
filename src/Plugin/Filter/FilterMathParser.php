@@ -15,7 +15,7 @@ use Drupal\mathd8\ParserInterface;
  * @Filter(
  *   id = "filter_mathd8_parser",
  *   title = @Translation("Display any text as a mathematical expression"),
- *   type = Drupal\filter\Plugin\FilterInterface::TYPE_HTML_RESTRICTOR,
+ *   type = Drupal\filter\Plugin\FilterInterface::TYPE_TRANSFORM_IRREVERSIBLE,
  *   weight = -10
  * )
  */
@@ -61,8 +61,7 @@ class FilterMathParser extends FilterBase implements ContainerFactoryPluginInter
    * {@inheritdoc}
    */
   public function process($text, $langcode) {
-    $text_cleaned = $filter = new FilterProcessResult(_filter_html_escape($text));
-    $text = $this->convertAllTags($text_cleaned);
+    $text = $this->convertAllTags($text);
     $filter = new FilterProcessResult($text);
     $filter->setAttachments(array(
       'library' => array('mathd8/mathd8-js'),
