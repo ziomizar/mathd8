@@ -4,7 +4,10 @@ namespace Drupal\mathd8\Plugin\Filter;
 
 use Drupal\filter\FilterProcessResult;
 use Drupal\filter\Plugin\FilterBase;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\mathd8\ParserInterface;
 
 /**
  * Provides a filter to display any HTML as plain text.
@@ -16,18 +19,51 @@ use Drupal\Core\Form\FormStateInterface;
  *   weight = -10
  * )
  */
-class FilterMathParser extends FilterBase {
+class FilterMathParser extends FilterBase implements ContainerFactoryPluginInterface {
+
+  /**
+   * The parser service.
+   *
+   * @var \Drupal\mathd8\ParserInterface
+   */
+  protected $parser;
+
+  /**
+   * Constructs the math filter plugin.
+   *
+   * @param array $configuration
+   *   A configuration array containing information about the plugin instance.
+   * @param string $plugin_id
+   *   The plugin_id for the plugin instance.
+   * @param mixed $plugin_definition
+   *   The plugin implementation definition.
+   * @param \Drupal\mathd8\ParserInterface $parser
+   *   The token service.
+   */
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, ParserInterface $parser) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+    $this->parser = $parser;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('mathd8.parser')
+    );
+  }
 
   /**
    * {@inheritdoc}
    */
   public function process($text, $langcode) {
 
-    /** @var \Drupal\mathd8\ParserInterface $parser */
-    $parser = \Drupal::service('mathd8.parser');
-
     $text_cleaned = $filter = new FilterProcessResult(_filter_html_escape($text));
-    $result = $parser->getEvaluationSteps($text_cleaned);
+    $result = $this->parser->getEvaluationSteps($text_cleaned);
 
     $animate_expression = $this->settings['animation'] ? 'not-animated-yet' : '';
 

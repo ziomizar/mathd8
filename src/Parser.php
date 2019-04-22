@@ -208,7 +208,7 @@ class Parser implements ParserInterface {
       // There is something wrong with the expression, or an invalid token
       // or a wrong order of the operands. Build a default array to report
       // the error.
-      $output['result'] = $this->t("Malformed expression: @exception", ['@exception' => $error]);
+      $output['result'] = sprintf("Malformed expression: %s", $error);
       $output['tokens'][] = ['value' => $expression, 'position' => 0];
       $output['steps'] = [];
     }
