@@ -52,6 +52,10 @@ CONFIGURATION
  - Click on the engine icon to open the setting to enable or disable the `animation` checkbox in order to simulate the evaluation in the frontend.
  - "Save"
  
+ The expression have to be written as `1+2+3+4*5*6` no parenthesis or other char as allowed. 
+ Can be used only one expressions per field.
+  
+ 
  TEXT FILTER
  
  The module provide a text filter that can be used as input format, 
