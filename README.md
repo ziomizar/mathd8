@@ -58,8 +58,8 @@ CONFIGURATION
  to enable the mathematical parser on an existing text format:
  - Go to the Text Formats and Editors page (admin/config/content/formats)
      and configure the desired input formats to enable the filter.
- - Rearrange the Filter processing order to resolve conflicts with other 
-      filters.
+ - Enable `Display any text as a mathematical expression`     
+ - Rearrange the Filter processing order to resolve conflicts with other filters.
       
  If you want to create a new text format:
  - `+ Add text format` on (admin/config/content/formats) 
@@ -72,6 +72,8 @@ CONFIGURATION
 
  Then the filter will be available in the text fields with the `text format` option list, 
  as for example usually is the body.
+ 
+ The expression have to be written as [formula:1+2+3+4*5*6] and can be used several expressions per field.
  
 
 MAINTAINERS

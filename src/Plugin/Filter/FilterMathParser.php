@@ -15,7 +15,7 @@ use Drupal\mathd8\ParserInterface;
  * @Filter(
  *   id = "filter_mathd8_parser",
  *   title = @Translation("Display any text as a mathematical expression"),
- *   type = Drupal\filter\Plugin\FilterInterface::TYPE_HTML_RESTRICTOR,
+ *   type = Drupal\filter\Plugin\FilterInterface::TYPE_TRANSFORM_IRREVERSIBLE,
  *   weight = -10
  * )
  */
@@ -61,9 +61,63 @@ class FilterMathParser extends FilterBase implements ContainerFactoryPluginInter
    * {@inheritdoc}
    */
   public function process($text, $langcode) {
+    $text = $this->convertAllTags($text);
+    $filter = new FilterProcessResult($text);
+    $filter->setAttachments(array(
+      'library' => array('mathd8/mathd8-js'),
+    ));
 
-    $text_cleaned = $filter = new FilterProcessResult(_filter_html_escape($text));
-    $result = $this->parser->getEvaluationSteps($text_cleaned);
+    return $filter;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function tips($long = FALSE) {
+    return $this->t('You can write expressions in the format [formula:1+2+3+4+5*12-14] only spaces, integer numbers and + - / * operators are allowed. Its possible write and compute multiple expressions in the same field, and write text around it.');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function settingsForm(array $form, FormStateInterface $form_state) {
+    $form['animation'] = array(
+      '#type' => 'checkbox',
+      '#title' => $this->t('Animate the expression.'),
+      '#default_value' => $this->settings['animation'],
+      '#description' => $this->t('Animate the parsing of the expression.'),
+    );
+    return $form;
+  }
+
+  /**
+   * Get a text convert all the [formula:?] tags into their values.
+   *
+   * @param string $text
+   *   The field content where is possible found several mathematical tags.
+   *
+   * @return string
+   *   The string with all token replaced.
+   */
+  protected function convertAllTags($text) {
+    if (stristr(strtoupper($text), '[FORMULA') !== FALSE) {
+      $text = preg_replace_callback('/\[FORMULA:(.*?)\]/i',
+        [$this, 'evaluateTag'], $text);
+    }
+    return $text;
+  }
+
+  /**
+   * Given an expression return its steps.
+   *
+   * @param string $match
+   *   The expression inside a tag.
+   *
+   * @return string
+   *   The html content of the tag.
+   */
+  protected function evaluateTag($match) {
+    $result = $this->parser->getEvaluationSteps($match[1]);
 
     $animate_expression = $this->settings['animation'] ? 'not-animated-yet' : '';
 
@@ -84,32 +138,7 @@ class FilterMathParser extends FilterBase implements ContainerFactoryPluginInter
 
     $output .= '</div>';
 
-    $filter = new FilterProcessResult($output);
-    $filter->setAttachments(array(
-      'library' => array('mathd8/mathd8-js'),
-    ));
-
-    return $filter;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function tips($long = FALSE) {
-    return $this->t('Only spaces, integer numbers and + - / * operators are allowed. Its possible write and compute just one expression.');
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function settingsForm(array $form, FormStateInterface $form_state) {
-    $form['animation'] = array(
-      '#type' => 'checkbox',
-      '#title' => $this->t('Animate the expression.'),
-      '#default_value' => $this->settings['animation'],
-      '#description' => $this->t('Animate the parsing of the expression.'),
-    );
-    return $form;
+    return $output;
   }
 
 }
