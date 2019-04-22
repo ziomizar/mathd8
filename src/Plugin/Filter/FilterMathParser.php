@@ -4,6 +4,7 @@ namespace Drupal\mathd8\Plugin\Filter;
 
 use Drupal\filter\FilterProcessResult;
 use Drupal\filter\Plugin\FilterBase;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Provides a filter to display any HTML as plain text.
@@ -24,7 +25,9 @@ class FilterMathParser extends FilterBase {
     $text_cleaned = $filter = new FilterProcessResult(_filter_html_escape($text));
     $result = $this->evaluate($text_cleaned);
 
-    $output = '<div class="mathd8-expression not-animated-yet">';
+    $animate_expression = $this->settings['animation'] ? 'not-animated-yet' : '';
+
+    $output = sprintf('<div class="mathd8-expression %s">', $animate_expression);
     foreach ($result['tokens'] as $token) {
       if ($token) {
         $output .= sprintf('<span class="token token-%s">%s</span>', $token->position(), $token->value());
@@ -105,6 +108,19 @@ class FilterMathParser extends FilterBase {
     }
 
     return $output;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function settingsForm(array $form, FormStateInterface $form_state) {
+    $form['animation'] = array(
+      '#type' => 'checkbox',
+      '#title' => $this->t('Animate the expression.'),
+      '#default_value' => $this->settings['animation'],
+      '#description' => $this->t('Animate the parsing of the expression.'),
+    );
+    return $form;
   }
 
 }

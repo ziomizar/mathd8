@@ -14,10 +14,17 @@
  *   - operator: the operator
  *   - result: result ID of the operation
  *   - result_value: result value of the operation
+ * - animation: true/false if the animation is enabled or disabled.
  */
 #}
+{% set attribute = create_attribute() %}
+{% set classes = [
+     animation ? 'not-animated-yet',
+     'mathd8-expression'
+   ]
+%}
 
-<div class="mathd8-expression not-animated-yet">
+<div{{ attribute.addClass(classes) }}>
   {% for token in tokens %}
     <span class="token token-{{ token.position }}">
       {{ token.value }}

@@ -109,6 +109,7 @@ class Mathd8FieldFormatter extends FormatterBase implements ContainerFactoryPlug
     foreach ($items as $delta => $item) {
       $value = $this->viewValue($item);
       $elements[$delta] = [
+        '#animation' => (bool) $this->getSetting('animation'),
         '#result' => $value['result'],
         '#raw' => $value['expression'],
         '#tokens' => $value['tokens'],
@@ -120,11 +121,6 @@ class Mathd8FieldFormatter extends FormatterBase implements ContainerFactoryPlug
         '#attached' => [
           'library' => [
             'mathd8/mathd8-js',
-          ],
-          'drupalSettings' => [
-            'mathd8' => [
-              'animation' => $this->getSetting('animation'),
-            ],
           ],
         ],
       ];

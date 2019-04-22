@@ -22,21 +22,19 @@
       }
       
       function parse() {
-        if (drupalSettings.mathd8.animation) {
-          $('.mathd8-expression.not-animated-yet').each(function () {
-            let expressionObj = {};
-            expressionObj.$obj = $(this);
-            $(this).find('.steps .step').each(function (index, step) {
-              let stepObj = {};
-              stepObj.$obj = $(this);
-              setTimeout(function () {
-                executeStep(stepObj.$obj, expressionObj.$obj);
-              }, 2500 * index);
-            })
-            // Compute this expression just one time removing the status not-animated-yet.
-            expressionObj.$obj.removeClass('not-animated-yet');
-          });
-        }
+        $('.mathd8-expression.not-animated-yet').each(function () {
+          let expressionObj = {};
+          expressionObj.$obj = $(this);
+          $(this).find('.steps .step').each(function (index, step) {
+            let stepObj = {};
+            stepObj.$obj = $(this);
+            setTimeout(function () {
+              executeStep(stepObj.$obj, expressionObj.$obj);
+            }, 2500 * index);
+          })
+          // Compute this expression just one time removing the status not-animated-yet.
+          expressionObj.$obj.removeClass('not-animated-yet');
+        });
       }
       
       parse();

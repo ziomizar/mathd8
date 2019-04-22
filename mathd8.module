@@ -16,6 +16,7 @@ function mathd8_theme() {
         'raw' => NULL,
         'tokens' => NULL,
         'result' => NULL,
+        'animation' => NULL,
       ],
     ],
   ];
