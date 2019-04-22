@@ -123,7 +123,22 @@ class Parser implements ParserInterface {
         $op1 = $this->pop();
         $operator = $this->operators[$token->value()];
 
-        $result = $operator->evaluate($op1->value(), $op2->value());
+        try {
+          $result = $operator->evaluate($op1->value(), $op2->value());
+        }
+        catch (MalformedExpressionException $e) {
+          // Reset the steps array as any operation should be done.
+          $this->steps = [];
+          $this->steps[] = [
+            'op1' => $op1->position(),
+            'op2' => $op2->position(),
+            'operator' => $token->position(),
+            'result_value' => NULL,
+            'result' => $e->getMessage(),
+          ];
+
+          return new Token(0, 0);
+        }
         // Save the result of this operation as a token with a custom position
         // used as id.
         $result = new Token($result, 'result-step-' . count($this->steps));
