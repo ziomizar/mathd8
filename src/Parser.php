@@ -176,4 +176,64 @@ class Parser implements ParserInterface {
     return TRUE;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getEvaluationSteps($expression) {
+    $output = [];
+    $valid_expression = TRUE;
+    // The error message if there is any.
+    $error = '';
+
+    try {
+      $result = $this->evaluate($expression);
+      if ($result) {
+        $output['result'] = $result->value();
+        /** @var \Drupal\mathd8\Controller\Token[] $tokens */
+        $output['expression'] = $this->expression();
+        $output['tokens'] = $this->toArray($output['expression']);
+        $output['steps'] = $this->steps();
+      }
+    }
+    catch (InvalidTokenException $e) {
+      $valid_expression = FALSE;
+      $error = $e->getMessage();
+    }
+    catch (MalformedExpressionException $e) {
+      $valid_expression = FALSE;
+      $error = $e->getMessage();
+    }
+
+    if (!$valid_expression) {
+      // There is something wrong with the expression, or an invalid token
+      // or a wrong order of the operands. Build a default array to report
+      // the error.
+      $output['result'] = $this->t("Malformed expression: @exception", ['@exception' => $error]);
+      $output['tokens'][] = ['value' => $expression, 'position' => 0];
+      $output['steps'] = [];
+    }
+
+    return $output;
+  }
+
+  /**
+   * Convert the array of tokens into an associative array.
+   *
+   * @params Drupal\mathd8\Controller\Token[] $tokens
+   *   The array of tokens.
+   *
+   * @return array
+   *   The array of token as associative array.
+   */
+  protected function toArray(array $tokens) {
+    $output = [];
+    foreach ($tokens as $token) {
+      $output[] = [
+        'value' => $token->value(),
+        'position' => $token->position(),
+      ];
+    }
+    return $output;
+  }
+
 }

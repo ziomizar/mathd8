@@ -3,7 +3,7 @@
     attach: function (context, settings) {
       
       function executeStep(element, expression) {
-        var step = {};
+        let step = {};
         step.op1 = element.data("op1");
         step.op2 = element.data("op2");
         step.operator = element.data("operator");
@@ -31,7 +31,7 @@
             setTimeout(function () {
               executeStep(stepObj.$obj, expressionObj.$obj);
             }, 2500 * index);
-          })
+          });
           // Compute this expression just one time removing the status not-animated-yet.
           expressionObj.$obj.removeClass('not-animated-yet');
         });

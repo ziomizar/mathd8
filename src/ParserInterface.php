@@ -59,4 +59,15 @@ interface ParserInterface {
    */
   public function validateExpression($expression);
 
+  /**
+   * Evaluate the text and return an array with all the operations.
+   *
+   * @params string $expression
+   *   The mathematical expression.
+   *
+   * @return array
+   *   Array with result, steps and tokens.
+   */
+  public function getEvaluationSteps($expression);
+
 }

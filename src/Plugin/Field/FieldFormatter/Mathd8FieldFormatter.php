@@ -11,8 +11,6 @@ use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\mathd8\Parser;
-use Drupal\mathd8\Exception\InvalidTokenException;
-use Drupal\mathd8\Exception\MalformedExpressionException;
 
 /**
  * Plugin implementation of the 'mathd_parser_formatter' formatter.
@@ -21,9 +19,8 @@ use Drupal\mathd8\Exception\MalformedExpressionException;
  *   id = "mathd8_parser",
  *   label = @Translation("Mathematical parser"),
  *   field_types = {
- *     "text",
- *     "text_long",
- *     "text_with_summary"
+ *     "string",
+ *     "string_long"
  *   }
  * )
  */
@@ -144,64 +141,7 @@ class Mathd8FieldFormatter extends FormatterBase implements ContainerFactoryPlug
   protected function viewValue(FieldItemInterface $item) {
     $output = [];
     $output['raw'] = Html::escape($item->value);
-
-    $valid_expression = TRUE;
-    // The error message if there is any.
-    $error = '';
-
-    if ($this->parser) {
-      try {
-        $result = $this->parser->evaluate($output['raw']);
-        if ($result) {
-          $output['result'] = $result->value();
-          /** @var \Drupal\mathd8\Controller\Token[] $tokens */
-          $output['expression'] = $this->parser->expression();
-          $output['tokens'] = $this->toArray($output['expression']);
-          $output['steps'] = $this->parser->steps();
-        }
-      }
-      catch (InvalidTokenException $e) {
-        $valid_expression = FALSE;
-        $error = $e->getMessage();
-      }
-      catch (MalformedExpressionException $e) {
-        $valid_expression = FALSE;
-        $error = $e->getMessage();
-      }
-    }
-    else {
-      $valid_expression = FALSE;
-    }
-
-    if (!$valid_expression) {
-      // There is something wrong with the expression, or an invalid token
-      // or a wrong order of the operands. Build a default array to report
-      // the error.
-      $output['result'] = $this->t("Malformed expression: @exception", ['@exception' => $error]);
-      $output['tokens'][] = ['value' => $output['raw'], 'position' => 0];
-      $output['steps'] = [];
-    }
-
-    return $output;
-  }
-
-  /**
-   * Convert the array of tokens into an associative array.
-   *
-   * @params Drupal\mathd8\Controller\Token[] $tokens
-   *   The array of tokens.
-   *
-   * @return array
-   *   The array of token as associative array.
-   */
-  public function toArray(array $tokens) {
-    $output = [];
-    foreach ($tokens as $token) {
-      $output[] = [
-        'value' => $token->value(),
-        'position' => $token->position(),
-      ];
-    }
+    $output = $this->parser->getEvaluationSteps($output['raw']);
     return $output;
   }
 

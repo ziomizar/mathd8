@@ -22,13 +22,17 @@ class FilterMathParser extends FilterBase {
    * {@inheritdoc}
    */
   public function process($text, $langcode) {
+
+    /** @var \Drupal\mathd8\ParserInterface $parser */
+    $parser = \Drupal::service('mathd8.parser');
+
     $text_cleaned = $filter = new FilterProcessResult(_filter_html_escape($text));
-    $result = $this->evaluate($text_cleaned);
+    $result = $parser->getEvaluationSteps($text_cleaned);
 
     $animate_expression = $this->settings['animation'] ? 'not-animated-yet' : '';
 
     $output = sprintf('<div class="mathd8-expression %s">', $animate_expression);
-    foreach ($result['tokens'] as $token) {
+    foreach ($result['expression'] as $token) {
       if ($token) {
         $output .= sprintf('<span class="token token-%s">%s</span>', $token->position(), $token->value());
       }
@@ -57,57 +61,6 @@ class FilterMathParser extends FilterBase {
    */
   public function tips($long = FALSE) {
     return $this->t('Only spaces, integer numbers and + - / * operators are allowed. Its possible write and compute just one expression.');
-  }
-
-  /**
-   * Evaluate the text and return an array with all the operations.
-   *
-   * @params string $expression
-   *   The mathematical expression.
-   *
-   * @return array
-   *   Array with result, steps and tokens.
-   */
-  public function evaluate($expression) {
-    /** @var \Drupal\mathd8\ParserInterface $parser */
-    $parser = \Drupal::service('mathd8.parser');
-    $valid_expression = TRUE;
-    // The error message if there is any.
-    $error = '';
-
-    if ($parser) {
-      try {
-        $result = $parser->evaluate($expression);
-        if ($result) {
-          $output['result'] = $result->value();
-          /** @var \Drupal\mathd8\Controller\Token[] $tokens */
-          $output['tokens'] = $parser->expression();
-          $output['steps'] = $parser->steps();
-        }
-      }
-      catch (InvalidTokenException $e) {
-        $valid_expression = FALSE;
-        $error = $e->getMessage();
-      }
-      catch (MalformedExpressionException $e) {
-        $valid_expression = FALSE;
-        $error = $e->getMessage();
-      }
-    }
-    else {
-      $valid_expression = FALSE;
-    }
-
-    if (!$valid_expression) {
-      // There is something wrong with the expression, or an invalid token
-      // or a wrong order of the operands. Build a default array to report
-      // the error.
-      $output['result'] = $this->t("Malformed expression: @exception", ['@exception' => $error]);
-      $output['tokens'][] = ['value' => $expression, 'position' => 0];
-      $output['steps'] = [];
-    }
-
-    return $output;
   }
 
   /**

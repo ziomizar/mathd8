@@ -40,13 +40,15 @@ CONFIGURATION
  This module provide a field formatter that can be used in all the "text" fields and a text filter. 
 
  FIELD FORMATTER
-  
+ 
+ This field formatter is available just for `Text (plain, long)` and `Text (plain)`.  
  Select the formatter "Mathematical parser" on a text field from the "Manage display" of a node type.
- As an example to enable the "Mathematical parser" on the body field of the "Article" nodes:
+ As an example to enable the "Mathematical parser" on a new field `math` in the node "Article":
  
  - Go to `Administration > Structure > Content types > Article` (/admin/structure/types/manage/article) 
+ - Create a new field of type `Text (plain, long)` or `Text (plain)` and call it `math` 
  - Click on the tab `Manage display`
- - Select `Mathematical parser` in the column `FORMAT` of the `Body` field
+ - Select `Mathematical parser` in the column `FORMAT` of the `math` field
  - Click on the engine icon to open the setting to enable or disable the `animation` checkbox in order to simulate the evaluation in the frontend.
  - "Save"
  
