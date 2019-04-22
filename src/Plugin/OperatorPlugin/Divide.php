@@ -3,6 +3,7 @@
 namespace Drupal\mathd8\Plugin\OperatorPlugin;
 
 use Drupal\mathd8\Plugin\OperatorPluginBase;
+use Drupal\mathd8\Exception\MalformedExpressionException;
 
 /**
  * Plugin implementation of .
@@ -22,7 +23,12 @@ class Divide extends OperatorPluginBase {
    * {@inheritdoc}
    */
   public function evaluate($op1, $op2) {
-    return $op1 / $op2;
+    if ($op2 != 0) {
+      return $op1 / $op2;
+    }
+    else {
+      throw new MalformedExpressionException("Arithmetic Exception: division by zero");
+    }
   }
 
 }

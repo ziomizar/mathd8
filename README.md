@@ -66,6 +66,8 @@ CONFIGURATION
  - Enable `Display any text as a mathematical expression`
  - Save
  
+ Mathematical parser text filter have an option to enable or disable the animation on the configuration form.
+
  Then the filter will be available in the text fields with the `text format` option list, 
  as for example usually is the body.
  

@@ -69,7 +69,7 @@ class Lexer implements LexerInterface {
       $previous_token = end($this->tokens);
       // Remove all spaces from the token.
       $token = trim($token);
-      if (!empty($token) && $this->haveInvalidTokens($token)) {
+      if ($token != '' && $this->haveInvalidTokens($token)) {
         if ($previous_token) {
           // Is not allowed having two operator next each other.
           if ($this->isOperator($token) && $this->isOperator($previous_token->value())) {

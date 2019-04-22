@@ -155,8 +155,8 @@ class Mathd8FieldFormatter extends FormatterBase implements ContainerFactoryPlug
         if ($result) {
           $output['result'] = $result->value();
           /** @var \Drupal\mathd8\Controller\Token[] $tokens */
-          $tokens = $this->parser->expression();
-          $output['tokens'] = $this->toArray($tokens);
+          $output['expression'] = $this->parser->expression();
+          $output['tokens'] = $this->toArray($output['expression']);
           $output['steps'] = $this->parser->steps();
         }
       }
